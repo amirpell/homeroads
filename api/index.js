@@ -113,20 +113,22 @@ app.post('/login' , async (req,res) => {
           return res.status(200).send({message : " User not exist" , success : false});
 
       }
+
       const isMatch = await bcrypt.compare(req.body.password , user.password);
       if(!isMatch){
-          return res.status(200).send({message : " Password is incorrect" , success : false});
+          return res.status(200).send({message : " Password is incorrect" , success : false});         
 
+          
       }
-    
+
       else{
-          const token = jwt.sign({id: user._id}, process.env.JWT_SECRET ,{
+          const token = jwt.sign({id: user._id}, "12345" ,{
               expiresIn: "1d"
           })
           res.send({message:"login successful", success:true , data:token});
 
       }
-    
+
   } catch(error){
       console.log(error)
       res.status(500).send({message : "error loggin in" , success: false ,error })
