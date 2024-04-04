@@ -63,7 +63,7 @@ const HomeScreen = () => {
 
   const fetchHomes = async () => {
     try {
-      const response = await axios.get(" https://homeroads-d3dd3d7877d2.herokuapp.com:27017/get-homes");
+      const response = await axios.get("localhost:27017/get-homes");
       setHomes(response.data);
       console.log(response.data , "amirpellman")
     } catch (error) {
