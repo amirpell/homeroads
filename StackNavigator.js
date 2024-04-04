@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import HomeScreen from './screens/HomeScreen'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Feather } from '@expo/vector-icons';
-
+import HomeProfile from './screens/HomeProfile'
 const StackNavigator = () => {
 
     const Stack = createNativeStackNavigator();
@@ -53,6 +53,7 @@ const StackNavigator = () => {
       <Stack.Navigator>
   
              <Stack.Screen name="Main" component={BottomTabs} options={{ headerShown: false }} />
+             <Stack.Screen name="HomeProfile" component={HomeProfile} options={{ headerShown: false }} />
 
     
    

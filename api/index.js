@@ -6,6 +6,9 @@ const nodemailer = require("nodemailer");
 const app = express();
 const port = 27017;
 const cors = require("cors");
+const bcrypt = require("bcryptjs");
+const User = require("./models/userModel");
+
 app.use(cors(
 
 ));
@@ -100,3 +103,33 @@ app.get("/get-homes", async (req, res) => {
         .json({ message: "An error occurred while getting the homes" });
     }
   });
+
+  
+app.post('/login' , async (req,res) => {
+  try{
+      const user  = await User.findOne({ email : req.body.email}) 
+
+      if(!user){
+          return res.status(200).send({message : " User not exist" , success : false});
+
+      }
+      const isMatch = await bcrypt.compare(req.body.password , user.password);
+      if(!isMatch){
+          return res.status(200).send({message : " Password is incorrect" , success : false});
+
+      }
+    
+      else{
+          const token = jwt.sign({id: user._id}, process.env.JWT_SECRET ,{
+              expiresIn: "1d"
+          })
+          res.send({message:"login successful", success:true , data:token});
+
+      }
+    
+  } catch(error){
+      console.log(error)
+      res.status(500).send({message : "error loggin in" , success: false ,error })
+  }
+})
+

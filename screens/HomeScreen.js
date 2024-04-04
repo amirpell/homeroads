@@ -14,6 +14,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 const HomeScreen = () => {
   const [filterbath, setFilterbath] = useState("");
+  const [homeid, setHomeid] = useState();
 
   const [inputs, setInputs] = React.useState({
     filterbath: '',
@@ -63,7 +64,7 @@ const HomeScreen = () => {
 
   const fetchHomes = async () => {
     try {
-      const response = await axios.get("localhost:27017/get-homes");
+      const response = await axios.get("https://homeroads.onrender.com/get-homes");
       setHomes(response.data);
       console.log(response.data , "amirpellman")
     } catch (error) {
@@ -84,6 +85,7 @@ const HomeScreen = () => {
      )
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
 
  
 
@@ -145,9 +147,11 @@ const HomeScreen = () => {
           </View>
         </View>
       </Modal>
+  
               <ScrollView  contentContainerStyle={{ flexGrow: 1 }} style={{marginBottom: 150}} >
 
         {filter?.map((homes) => (
+          
   <View key={homes._id}
             style={{
               padding: 15,
@@ -159,8 +163,54 @@ const HomeScreen = () => {
               marginVertical: 0,
             }}
           >
-            <ScrollView style={style.card}  >
+                <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible2}
+        onRequestClose={() => {
+          setModalVisible2(!modalVisible2);
+         
+        }}>
 
+
+
+        <View  style={style.centeredView}>
+          
+          <View style={style.modalView}>
+          <Pressable
+              style={[style.button, style.buttonClose]}
+              onPress={() =>
+                {
+               setModalVisible2(!modalVisible2)
+                }
+               }>
+              <Text style={style.textStyle}>back</Text>
+            </Pressable>
+            <Text>{homeid?.price}</Text>  
+            <Text>{homeid?.description}</Text>   
+            <ImageBackground 
+              style={{
+                width: "100%", height: 250,
+                 marginTop: 0
+              }}
+              imageStyle={{ borderTopLeftRadius: 20, borderTopRightRadius: 20, borderWidth: 0,
+                borderColor: "#539DF3",
+              }}
+            source={{uri :
+                    homes.images}}/>  
+
+          
+          </View>
+        </View>
+      </Modal>
+            <ScrollView style={style.card}  >
+            <Pressable   onPress={() =>
+            {
+               setModalVisible2(!modalVisible2),
+               setHomeid(homes);
+               
+            }
+               }>
                  <View style={{}}>
 
 
@@ -177,7 +227,7 @@ const HomeScreen = () => {
                    >
 <View style={{ alignSelf: 'flex-start', gap:5, flexDirection:"row",margin:15,flexWrap:"wrap" }}>
 {homes.proptags?.map((homes) => (
-<Text style={{backgroundColor: '#000000',color: '#ffffff',padding:5, borderRadius:5}}>
+<Text  key={homes} style={{backgroundColor: '#18181999',color: '#ffffff',padding:5, borderRadius:5}}>
   {homes}
  </Text>
 ))}
@@ -263,7 +313,7 @@ const HomeScreen = () => {
                   </View>
                 </View>
              
-
+</Pressable>
 
             </ScrollView>
 

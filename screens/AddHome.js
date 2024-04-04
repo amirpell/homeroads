@@ -25,13 +25,13 @@ import MultiSelect from 'react-native-multiple-select';
 
 const AddHome = () => {
   const items = [{
-    name: 'sale'
+    name: 'Sold'
   }, {
-    name: 'rent'
+    name: 'For Sale'
   }, {
-    name: 'sale2'
+    name: 'For Rent'
   }, {
-    name: 'rent2'
+    name: 'Holiday Rental'
   }
   ];
   var [proptags, setProptags] = useState([]);
@@ -177,7 +177,7 @@ const AddHome = () => {
             };
             {
             axios
-              .post("http://172.16.130.101:27017/addhome", home)
+              .post("https://homeroads.onrender.com/addhome", home)
               .then((response) => {
                 console.log(response);
               
