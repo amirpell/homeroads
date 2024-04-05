@@ -1,5 +1,5 @@
 import { StyleSheet, View ,Text,ScrollView,Pressable,Image, Modal, ImageBackground } from "react-native";
-import React, {useEffect, useLayoutEffect, useState} from "react";
+import React, {useContext, useEffect, useLayoutEffect, useState} from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import style from '../style/style';
 import { SimpleLineIcons } from '@expo/vector-icons';
@@ -11,10 +11,25 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { AntDesign } from "@expo/vector-icons";
 import Input from "../components/Input";
 import { MaterialIcons } from '@expo/vector-icons';
+import { UserType } from "../UserContext";
+import jwt_decode from "jwt-decode";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreen = () => {
   const [filterbath, setFilterbath] = useState("");
   const [homeid, setHomeid] = useState();
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const token = await AsyncStorage.getItem("authToken");
+      const decodedToken = jwt_decode(token);
+      const userId = decodedToken.userId;
+      setUserId(userId);
+    };
+
+    fetchUsers();
+  }, []);
+
+  const { userId, setUserId } = useContext(UserType);
 
   const [inputs, setInputs] = React.useState({
     filterbath: '',
@@ -81,39 +96,31 @@ const HomeScreen = () => {
 
 
 
+  const [user, setUser] = useState("");
 
-  const getUser = async () => {
-   
-    try{
-
-        const response = await axios.post(
-            "/get-user-info-by-id",
-            { token: localStorage.getItem('token') },
-             {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-
-        });
-
-
-        if (response.data.success) {
-            console.log(response.data.data)
-        }
-       
-    }catch(error){      
-       
-
-    }
     
-}
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await axios.get(
+          `https://homeroads.onrender.com/profile/${id}`
+        );
+
+        const { userinfo } = response.data;
+        setUser(userinfo);
 
 
+  
+        
+      } catch (error) {
+      }
+    };
 
-useEffect(()=> {
-getUser();
+    fetchProfile();
 
-},[]);
+
+  });
+
 
 
 

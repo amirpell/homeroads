@@ -122,7 +122,7 @@ app.post('/login' , async (req,res) => {
       }
 
       else{
-          const token = jwt.sign({id: user._id}, "12345" ,{
+          const token = jwt.sign({userId: user._id}, "12345" ,{
               expiresIn: "1d"
           })
           res.send({message:"login successful", success:true , data:token});
