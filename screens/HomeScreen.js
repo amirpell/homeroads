@@ -53,7 +53,9 @@ const HomeScreen = () => {
         },
         headerRight: () => (
   
-          <View></View>
+          <View>
+
+          </View>
         )
   
       })
@@ -76,6 +78,52 @@ const HomeScreen = () => {
     fetchHomes();
 
   }, []);
+
+
+
+
+  const getUser = async () => {
+   
+    try{
+
+        const response = await axios.post(
+            "/get-user-info-by-id",
+            { token: localStorage.getItem('token') },
+             {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+
+        });
+
+
+        if (response.data.success) {
+            console.log(response.data.data)
+        }
+       
+    }catch(error){      
+       
+
+    }
+    
+}
+
+
+
+useEffect(()=> {
+getUser();
+
+},[]);
+
+
+
+
+
+
+
+
+
+
 
   let filter =  homes.filter(baths => baths.baths>=parseInt(filterbath)
         
@@ -188,15 +236,7 @@ const HomeScreen = () => {
             </Pressable>
             <Text>{homeid?.price}</Text>  
             <Text>{homeid?.description}</Text>   
-            <ImageBackground 
-              style={{
-                width: "100%", height: 250,
-                 marginTop: 0
-              }}
-              imageStyle={{ borderTopLeftRadius: 20, borderTopRightRadius: 20, borderWidth: 0,
-                borderColor: "#539DF3",
-              }}
-            source={{uri :
+            <ImageBackground source={{uri :
                     homes.images}}/>  
 
           

@@ -7,6 +7,8 @@ const homesSchema = new mongoose.Schema({
   joindDate: { type: Date, default: Date.now },
   description: { type: String }, 
   images: { type:String}, 
+  imagespack: { type:String}, 
+  status: { type:String}, 
 
   bedrooms: { type: String}, 
   baths: { type: String}, 
@@ -21,8 +23,16 @@ const homesSchema = new mongoose.Schema({
   proptags:{  type:Array,
  
     default: [],
-  }
-  
+  },
+  videos: { type:String}, 
+
+  sold:{type:Boolean,
+        default: false
+  },
+  props:{  type:Array,
+ 
+    default: [],
+  },
 });
 
 

@@ -7,6 +7,8 @@ import HomeScreen from './screens/HomeScreen'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { Feather } from '@expo/vector-icons';
 import HomeProfile from './screens/HomeProfile'
+import Welcome from './screens/Welcome'
+import Login from './screens/Login'
 const StackNavigator = () => {
 
     const Stack = createNativeStackNavigator();
@@ -15,8 +17,18 @@ const StackNavigator = () => {
     function BottomTabs() {
       return (
         <Tab.Navigator screenOptions={{tabBarStyle: {position: 'absolute', height: 55}}}  headerMode = {'none'}>
+  <Tab.Screen name="HomeScreen" component={HomeScreen} options={{
+            tabBarLabel: "asd", headerShown: false,
+            tabBarIcon: ({ focused }) => focused ? (
+              <Feather name="home" size={24} color="#539DF3" />  
   
+            ) : (
+              <Feather name="home" size={24} color="#484C52" />
   
+            )
+          }}
+          />
+ 
           <Tab.Screen name="AddHome" component={AddHome} options={{
             tabBarLabel: "AddHome", headerShown: false,
             tabBarIcon: ({ focused }) => focused ? (
@@ -30,18 +42,7 @@ const StackNavigator = () => {
           />
   
           
-  <Tab.Screen name="HomeScreen" component={HomeScreen} options={{
-            tabBarLabel: ".", headerShown: false,
-            tabBarIcon: ({ focused }) => focused ? (
-              <Feather name="home" size={24} color="#539DF3" />  
   
-            ) : (
-              <Feather name="home" size={24} color="#484C52" />
-  
-            )
-          }}
-          />
- 
                   
             
   
@@ -51,9 +52,11 @@ const StackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-  
-             <Stack.Screen name="Main" component={BottomTabs} options={{ headerShown: false }} />
-             <Stack.Screen name="HomeProfile" component={HomeProfile} options={{ headerShown: false }} />
+      <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
+      <Stack.Screen name="login" component={Login} options={{ headerShown: false }} />
+
+        <Stack.Screen name="Main" component={BottomTabs} options={{ headerShown: false }} />
+        <Stack.Screen name="HomeProfile" component={HomeProfile} options={{ headerShown: false }} />
 
     
    
