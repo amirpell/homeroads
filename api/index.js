@@ -42,7 +42,7 @@ app.post("/addhome", async (req, res) => {
         name, images ,title,price
         ,description
         ,street,region,state,serialnum,propetysquremeter,homesquremeter,baths
-        ,bedrooms,proptags
+        ,bedrooms,proptags,imagespack
     
     } = req.body;
   
@@ -54,7 +54,7 @@ app.post("/addhome", async (req, res) => {
          name, images ,title,price,description
          ,street,region,state,serialnum,
          propetysquremeter,homesquremeter,baths,
-         bedrooms,proptags
+         bedrooms,proptags,imagespack
 
         });
   

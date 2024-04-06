@@ -1,5 +1,5 @@
 import { StyleSheet, View ,Text,ScrollView,Pressable,Image, Modal, ImageBackground } from "react-native";
-import React, {useContext, useEffect, useLayoutEffect, useState} from "react";
+import React, {Component, useContext, useEffect, useLayoutEffect, useState} from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import style from '../style/style';
 import { SimpleLineIcons } from '@expo/vector-icons';
@@ -11,25 +11,40 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { AntDesign } from "@expo/vector-icons";
 import Input from "../components/Input";
 import { MaterialIcons } from '@expo/vector-icons';
-import { UserType } from "../UserContext";
-import jwt_decode from "jwt-decode";
+import {  UserContext, UserType } from "../UserContext";
+import { jwtDecode } from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { decode } from "base-64";
 const HomeScreen = () => {
+
+
+
+
+
+
+
+ 
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  global.atob = decode;
   const [filterbath, setFilterbath] = useState("");
   const [homeid, setHomeid] = useState();
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const token = await AsyncStorage.getItem("authToken");
-      const decodedToken = jwt_decode(token);
-      const userId = decodedToken.userId;
-      setUserId(userId);
-    };
 
-    fetchUsers();
-  }, []);
-
-  const { userId, setUserId } = useContext(UserType);
 
   const [inputs, setInputs] = React.useState({
     filterbath: '',
@@ -69,7 +84,25 @@ const HomeScreen = () => {
         headerRight: () => (
   
           <View>
-
+     <Pressable 
+            onPress={
+                logout
+            }
+            
+          >
+            <Text
+              style={{
+                
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: 16,
+                color: "white",
+              }}
+        >
+              clear
+            </Text>
+            
+          </Pressable>
           </View>
         )
   
@@ -83,7 +116,7 @@ const HomeScreen = () => {
     try {
       const response = await axios.get("https://homeroads.onrender.com/get-homes");
       setHomes(response.data);
-      console.log(response.data , "amirpellman")
+  //    console.log(response.data , "amirpellman")
     } catch (error) {
       console.log("error fetching posts", error);
     }
@@ -98,17 +131,21 @@ const HomeScreen = () => {
 
   const [user, setUser] = useState("");
 
-    
+  
+
+  const [ userId, setUserId ] = useState("");
+
+ 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(
-          `https://homeroads.onrender.com/profile/${id}`
+          `https://homeroads.onrender.com/profile/${userId}`
         );
 
-        const { userinfo } = response.data;
+        const { userinfo } = response;
         setUser(userinfo);
-
+          console.log(response, "responser")
 
   
         
@@ -121,15 +158,39 @@ const HomeScreen = () => {
 
   });
 
+console.log(userId,"asodkasd")
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const token = await AsyncStorage.getItem("authToken");
+      const decodedToken =  jwtDecode(token);
+     // const decodedToken = jwtDecode(token, { header: true });
+      const userId = decodedToken.userId;
+    //  console.log(userId ,"ttttttttrooooooooooooken")
+    //  console.log(decodedToken ,"ttttttttrooooooooooooken")
+      console.log(decodedToken ,"ttttttttrooooooooooooken")
+
+    //  console.log( "fsdfasdfsdf")
+
+     setUserId(userId);
+      
+    };
+
+    fetchUsers();
+  }, []);
 
 
 
 
 
 
-
-
-
+  const logout = () => {
+    clearAuthToken();
+    navigation.navigate("Welcome")
+}
+const clearAuthToken = async () => {
+    await AsyncStorage.removeItem("authToken");
+    console.log("Cleared auth token");
+}
 
 
   let filter =  homes.filter(baths => baths.baths>=parseInt(filterbath)
@@ -142,12 +203,14 @@ const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
 
- 
+
+
 
   return (
 
   <SafeAreaView style={{marginTop:-20}}>
         <View style={style.buttonContainer}>
+   
         <Pressable style={{
           flexDirection: "row", marginRight: 0, flex: 1,
           justifyContent: 'center',
@@ -166,7 +229,6 @@ const HomeScreen = () => {
           </View>
         </Pressable>
       </View>
-
         <Modal
         animationType="slide"
         transparent={true}
@@ -225,13 +287,16 @@ const HomeScreen = () => {
         onRequestClose={() => {
           setModalVisible2(!modalVisible2);
          
-        }}>
+        }}
+        >
 
 
 
         <View  style={style.centeredView}>
           
           <View style={style.modalView}>
+          <ImageBackground style={{width:"100%" , height:"70%" }} source={{uri :homeid?.images}}>
+              </ImageBackground>  
           <Pressable
               style={[style.button, style.buttonClose]}
               onPress={() =>
@@ -239,12 +304,12 @@ const HomeScreen = () => {
                setModalVisible2(!modalVisible2)
                 }
                }>
+                
               <Text style={style.textStyle}>back</Text>
             </Pressable>
             <Text>{homeid?.price}</Text>  
             <Text>{homeid?.description}</Text>   
-            <ImageBackground source={{uri :
-                    homes.images}}/>  
+         
 
           
           </View>

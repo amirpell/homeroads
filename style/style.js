@@ -103,14 +103,14 @@ postgallery:{
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        
+       
       },
       modalView: {
         
         margin: 20,
         backgroundColor: 'white',
         borderRadius: 20,
-        padding: 100,
+        padding: 0,
         height:'100%',
         width:'100%',
         alignItems: 'center',

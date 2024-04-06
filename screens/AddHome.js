@@ -12,7 +12,7 @@ import {
     Image,
     Alert,
     Button,
-    TouchableOpacity, Option, Modal, Platform, Keyboard, ImageBackground, ScrollView
+    TouchableOpacity, Option, Modal, Platform, Keyboard, ImageBackground, ScrollView, FlatList
   } from "react-native";
   import React, { useEffect, useState,Component, } from "react";
 
@@ -21,9 +21,10 @@ import * as ImagePicker from 'expo-image-picker';
 import { Feather } from '@expo/vector-icons';
 import { useFonts } from "expo-font";
 import MultiSelect from 'react-native-multiple-select';
-
+import Carousel from 'react-native-snap-carousel';
 
 const AddHome = () => {
+  
   const items = [{
     name: 'Sold'
   }, {
@@ -173,7 +174,8 @@ const AddHome = () => {
               state: state,
               region: region,
               street: street,
-              proptags,proptags
+              proptags:proptags,
+              imagespack:imagespack
             };
             {
             axios
@@ -197,7 +199,7 @@ const AddHome = () => {
                 setProptags(proptags);
 
                 setState("");
-
+                setImagespack(imagespack)
                 setStreet("");
 
                  
@@ -215,7 +217,22 @@ const AddHome = () => {
           
           
           ;}
-          
+          const [imagespack, setImagespack] = useState([]);
+
+          const pickImage = async () => {
+              let result = await ImagePicker.launchImageLibraryAsync({
+                  mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                  allowsMultipleSelection: true,
+                  aspect: [1, 1],
+                  quality: 1,
+              });
+              
+              if (!result.canceled) {
+                  const selectedImageUris = result.assets.map((asset) => asset.uri);
+                  setImagespack(selectedImageUris);
+                  console.log(selectedImageUris)
+              }
+          }
   return (
 
     <KeyboardAvoidingView  behavior={Platform.OS === "ios" ? "padding" : "height"} style={{flex:1}}>
@@ -405,8 +422,54 @@ const AddHome = () => {
                      </View>
                      
              </View>
+             <View style={styles.container}>
+           
           
-      
+           <ImageBackground>
+         <Image
+          style={{
+           
+            width: 100,
+            height: 100,
+            borderRadius: 20,
+            resizeMode: "contain",
+          }}
+          source={require(
+           "../iconpics/addimage.jpg",
+)}
+        />
+        </ImageBackground>  
+        {
+     
+     images  && <Image style={styles.image} source={{uri: images}} />
+     
+ }
+              <View style={styles.uploadBtnContainer}>
+              
+                  <TouchableOpacity onPress={pickImage} style={styles.uploadBtn} >
+                  <Feather name="camera" size={24} color="black"
+                   style={{fontSize:15,marginBottom:9,marginRight:5}}/>
+
+                      <Text style={{fontSize:12,marginBottom:9,fontWeight:"bold"
+                      ,shadowOpacity: 0.27,
+
+}}>{images ? 'Edit' : 'Add'} </Text>
+  </TouchableOpacity>
+
+              </View>
+              
+      </View>
+             <FlatList
+                horizontal
+                data={postImage}
+                keyExtractor={(item, index) => item.uri + index.toString()}
+                renderItem={({ item }) => (
+                    <View style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', flexDirection: 'row'}}>
+                        <Image source={{ uri: item }} style={{ width: 200, height: 200 }} />
+                    </View>
+                )}
+            />
+     
         <Pressable
          
          onPress={handleAddhome} 
