@@ -461,7 +461,7 @@ const AddHome = () => {
       </View>
              <FlatList
                 horizontal
-                data={postImage}
+                data={imagespack}
                 keyExtractor={(item, index) => item.uri + index.toString()}
                 renderItem={({ item }) => (
                     <View style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', flexDirection: 'row'}}>
