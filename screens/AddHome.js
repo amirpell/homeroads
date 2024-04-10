@@ -15,13 +15,13 @@ import {
     TouchableOpacity, Option, Modal, Platform, Keyboard, ImageBackground, ScrollView, FlatList
   } from "react-native";
   import React, { useEffect, useState,Component, } from "react";
+  import * as SplashScreen from 'expo-splash-screen';
 
   import axios from "axios";
 import * as ImagePicker from 'expo-image-picker';
 import { Feather } from '@expo/vector-icons';
 import { useFonts } from "expo-font";
 import MultiSelect from 'react-native-multiple-select';
-import Carousel from 'react-native-snap-carousel';
 
 const AddHome = () => {
   
@@ -102,6 +102,18 @@ const AddHome = () => {
   let [fontsLoaded] = useFonts({
     'Poppins': require('../assets/fonts/Poppins-Regular.ttf')
   });
+  useEffect(()=> {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    prepare();
+  }, [])
+ 
+  if(!fontsLoaded){
+       return undefined;
+     } else {
+      SplashScreen.hideAsync();
+     }
     const addImage = async () => {
         let _image = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -230,6 +242,7 @@ const AddHome = () => {
               if (!result.canceled) {
                   const selectedImageUris = result.assets.map((asset) => asset.uri);
                   setImagespack(selectedImageUris);
+
                   console.log(selectedImageUris)
               }
           }

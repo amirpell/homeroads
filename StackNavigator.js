@@ -9,9 +9,15 @@ import { Feather } from '@expo/vector-icons';
 import HomeProfile from './screens/HomeProfile'
 import Welcome from './screens/Welcome'
 import Login from './screens/Login'
+import Register from './screens/Register'
+import EmailVerfication from './screens/EmailVerfication'
+import EmailVerified from './screens/EmailVerified'
+import UserEmailToReset from './screens/UserEmailToReset'
+import EnterResetToken from './screens/EnterResetToken'
+import NewPassword from './screens/NewPassword'
 
 
-const StackNavigator = () => {
+const StackNavigator = ({ navigation }) => {
 
     const Stack = createNativeStackNavigator();
     const Tab = createBottomTabNavigator();
@@ -22,7 +28,7 @@ const StackNavigator = () => {
     function AdminTabs() {
       
       return (
-        <Admin.Navigator screenOptions={{tabBarStyle: {position: 'absolute', height: 55}}}  headerMode = {'none'}>
+        <Admin.Navigator screenOptions={ {tabBarStyle: {position: 'absolute', height: 55}}}  headerMode = {'none'}>
  
           <Admin.Screen   name="AddHome" component={AddHome} options={{
             tabBarLabel: "AddHome", headerShown: false,
@@ -36,7 +42,18 @@ const StackNavigator = () => {
             )
           }}
           />
+       <Admin.Screen   name="HomeProfile" component={HomeProfile} options={{
+            tabBarLabel: "HomeProfile", headerShown: false,
+           
+            tabBarIcon: ({ focused }) => focused ? (
+              <Feather name="home" size={24} color="#539DF3" />  
   
+            ) : (
+              <Feather name="home" size={24} color="#484C52" />
+  
+            )
+          }}
+          />
   <Admin.Screen name="HomeScreen" component={HomeScreen} options={{
             tabBarLabel: "asd", headerShown: false,
           
@@ -62,7 +79,8 @@ const StackNavigator = () => {
     function BottomTabs() {
       
       return (
-        <Tab.Navigator screenOptions={{tabBarStyle: {position: 'absolute', height: 55}}}  headerMode = {'none'}>
+        <Tab.Navigator screenOptions={  {tabBarStyle: {position: 'absolute', height: 0,backgroundColor: 'powderblue' }
+         }}   headerMode = {'none'}>
   <Tab.Screen name="HomeScreen" component={HomeScreen} options={{
             tabBarLabel: "", headerShown: false,
           
@@ -89,14 +107,18 @@ const StackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+      <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+
       <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
       <Stack.Screen name="login" component={Login} options={{ headerShown: false }} />
       <Stack.Screen name="Admin" component={AdminTabs} options={{ headerShown: false }} />
-
         <Stack.Screen name="Main" component={BottomTabs} options={{ headerShown: false }} />
-        <Stack.Screen name="HomeProfile" component={HomeProfile} options={{ headerShown: false }} />
+        <Stack.Screen name="EmailVerfication" component={EmailVerfication} options={{ headerShown: false }} />
+        <Stack.Screen name="EmailVerified" component={EmailVerified} options={{ headerShown: false }} />
+        <Stack.Screen name="UserEmailToReset" component={UserEmailToReset} options={{ headerShown: false }} />
+        <Stack.Screen name="EnterResetToken" component={EnterResetToken} options={{ headerShown: false }} />
+        <Stack.Screen name="NewPassword" component={NewPassword} options={{ headerShown: false }} />
 
-    
    
 
       

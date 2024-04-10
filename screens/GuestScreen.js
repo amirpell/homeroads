@@ -17,8 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { decode } from "base-64";
 import Swiper   from 'react-native-swiper'
 import { Ionicons } from '@expo/vector-icons';
-
-const HomeScreen = () => {
+const GuestScreen = () => {
 
 
 
@@ -87,13 +86,23 @@ const HomeScreen = () => {
         headerRight: () => (
   
           <View>
-     <Pressable style={{marginRight:15}} 
+     <Pressable 
             onPress={
                 logout
             }
             
           >
-           <MaterialIcons name="logout" size={24} color="white" />
+            <Text
+              style={{
+                
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: 16,
+                color: "white",
+              }}
+        >
+              clear
+            </Text>
             
           </Pressable>
           </View>
@@ -196,12 +205,28 @@ const clearAuthToken = async () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
 
-  
+  const data = [
+    {
+      title: "Aenean leo",
+      body: "Ut tincidunt tincidunt erat. Sed cursus turpis vitae tortor. Quisque malesuada placerat nisl. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.",
+      imgUrl: "https://picsum.photos/id/11/200/300",
+    },
+    {
+      title: "In turpis",
+      body: "Aenean ut eros et nisl sagittis vestibulum. Donec posuere vulputate arcu. Proin faucibus arcu quis ante. Curabitur at lacus ac velit ornare lobortis. ",
+      imgUrl: "https://picsum.photos/id/10/200/300",
+    },
+    {
+      title: "Lorem Ipsum",
+      body: "Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.",
+      imgUrl: "https://picsum.photos/id/12/200/300",
+    },
+  ];
+
 
   return (
 
-  <SafeAreaView style={{marginTop:-20 }}>
-    <View>
+  <SafeAreaView style={{marginTop:-20}}>
         <View style={style.buttonContainer}>
    
         <Pressable style={{
@@ -224,7 +249,7 @@ const clearAuthToken = async () => {
         </Pressable>
       </View>
         <Modal
-        animationType="none"
+        animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
@@ -276,7 +301,7 @@ const clearAuthToken = async () => {
             }}
           >
                 <Modal
-        animationType="none"
+        animationType="slide"
         transparent={true}
         visible={modalVisible2}
         onRequestClose={() => {
@@ -451,12 +476,12 @@ const clearAuthToken = async () => {
 
 ))}
           </ScrollView>
-          </View>
+
   </SafeAreaView>
   );
 };
 
-export default HomeScreen;
+export default GuestScreen;
 
 const styles = StyleSheet.create({
  
