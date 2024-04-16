@@ -1,4 +1,4 @@
-import { StyleSheet, View ,Text,ScrollView,Pressable,Image, Modal, ImageBackground, FlatList } from "react-native";
+import { StyleSheet, View ,Text,ScrollView,Pressable,Image, Modal, ImageBackground, FlatList, Platform } from "react-native";
 import React, {Component, useContext, useEffect, useLayoutEffect, useState} from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import style from '../style/style';
@@ -17,7 +17,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { decode } from "base-64";
 import Swiper   from 'react-native-swiper'
 import { Ionicons } from '@expo/vector-icons';
-
+import { useFonts } from "expo-font";
+import * as SplashScreen from 'expo-splash-screen';
+import WebView from "react-native-webview";
 const HomeScreen = () => {
 
 
@@ -107,7 +109,7 @@ const HomeScreen = () => {
 
   const fetchHomes = async () => {
     try {
-      const response = await axios.get("https://homeroads.onrender.com/get-homes");
+      const response = await axios.get("http://10.0.0.10:27017/get-homes");
       setHomes(response.data);
   //    console.log(response.data , "amirpellman")
     } catch (error) {
@@ -151,7 +153,7 @@ const HomeScreen = () => {
 
   });
 
-console.log(userId,"asodkasd")
+console.log(userId,"asodkasd") 
   useEffect(() => {
     const fetchUsers = async () => {
       const token = await AsyncStorage.getItem("authToken");
@@ -174,7 +176,32 @@ console.log(userId,"asodkasd")
 
 
 
+ class YoubuteVideo extends Component {
 
+
+  render() {
+
+if(homeid?.youtube!=="" && homeid?.youtube!==null && homeid?.youtube!==undefined){
+    return (
+         <View style={{ height:250 , width:'100%'}}>
+  <WebView
+      style={ {  marginTop: (Platform.OS == 'ios') ? 20 : 0,} }
+      source={{uri: 'https://www.youtube.com/embed/'+homeid?.youtube }}
+  />
+</View>
+     
+    );
+}
+else 
+{
+return(
+  <View>
+    
+  </View>
+) 
+}
+}
+}
 
   const logout = () => {
     clearAuthToken();
@@ -195,7 +222,26 @@ const clearAuthToken = async () => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
+  const [modalVisible3, setModalVisible3] = useState(false);
+ 
+  let [fontsLoaded] = useFonts({
+    'Poppins': require('../assets/fonts/Poppins-Regular.ttf'),
+    
+    'PoppinsBold': require('../assets/fonts/Poppins-Bold.ttf')
 
+  });
+  useEffect(()=> {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    prepare();
+  }, [])
+ 
+  if(!fontsLoaded){
+       return undefined;
+     } else {
+      SplashScreen.hideAsync();
+     }
   
 
   return (
@@ -223,6 +269,54 @@ const clearAuthToken = async () => {
           </View>
         </Pressable>
       </View>
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={modalVisible3}
+        onRequestClose={() => {
+          setModalVisible3(!modalVisible3);
+        }}>
+
+<View style={{backgroundColor:"white" , height:"100%" , width:"100%"}}>
+  
+<View style={{width:"100%" , display:"flex" , alignItems:"flex-start" }}>
+          <Pressable
+              style={[style.button, style.buttonClose]}
+              onPress={() =>
+                {
+               setModalVisible3(!modalVisible3)
+                }
+               }>
+                
+                <Ionicons name="chevron-back" size={24} color="black" />
+            </Pressable>
+            </View>
+<Swiper buttonWrapperStyle={{alignItems: 'center'}}   showsButtons={true} showsPagination={false}>
+
+         
+{homeid?.imagespack?.map((post) => (
+ 
+<View   key={post}>
+
+<Image style={{
+          width: "100%", height: "100%",resizeMode:"contain",
+          borderWidth: 0, borderColor: "#539DF3", marginTop: 0
+        }}   source={{
+          uri: post
+        }} />
+
+
+</View>
+
+
+
+))}
+
+</Swiper>
+
+
+</View>
+      </Modal>
         <Modal
         animationType="none"
         transparent={true}
@@ -260,7 +354,7 @@ const clearAuthToken = async () => {
         </View>
       </Modal>
   
-              <ScrollView  contentContainerStyle={{ flexGrow: 1 }} style={{marginBottom: 150}} >
+              <ScrollView  contentContainerStyle={{ flexGrow: 1 }} style={{marginBottom: 250}} >
 
         {filter?.map((homes) => (
           
@@ -302,35 +396,142 @@ const clearAuthToken = async () => {
                 <Ionicons name="chevron-back" size={24} color="black" />
             </Pressable>
             </View>
+
+<ScrollView style={{marginBottom:100}}>
+
+<View style={{height:250, display:"flex" , alignItems:"center"}}>
+
+                
+
                       <Swiper buttonWrapperStyle={{alignItems: 'flex-start', marginTop:"25%"}}   showsButtons={true} showsPagination={false}>
 
          
             {homeid?.imagespack?.map((post) => (
              
      <View   key={post}>
- 
+ <Pressable
+              
+              onPress={() =>
+                {
+               setModalVisible3(!modalVisible3)
+                }
+               }>
      <Image style={{
-                      width: "100%", height: "70%",
+                      width: "100%", height: "100%",resizeMode:"cover",
                       borderWidth: 0, borderColor: "#539DF3", marginTop: 0
                     }}   source={{
                       uri: post
                     }} />
-              
+              </Pressable>
    </View>
    
-            ))}
-
+       
+   ))}
         
       </Swiper>
-          
-         
-            <Text>{homeid?.price}</Text>  
-            <Text>{homeid?.description}</Text>   
-         
+
+    
+     </View>     
+         <View  style={{ flexDirection: 'row'}}>
+
+                  <View style={{ flexDirection: 'column', marginTop: 0, marginLeft: 0 , alignItems:"center" , display:"flex",width:"100%" }}>
+
+
+<YoubuteVideo/>
            
+
+
+                    <Text style={{ fontSize: 30, fontWeight: 'bold', color: "#1E1E1E",textAlign:"center", fontFamily:"Poppins" }}>
+                    {homeid?.title}  </Text>
+                    <Text style={{ fontSize: 24,textAlign:"center"  }}>€{homeid?.price}</Text>
+
+                    <View style={{ width: "35%", marginTop: 10 }}>
+                  
+
+                    </View>
+
+
+                  </View>
+
+                
+
+                  </View>
+
+                  <View  style={{ flexDirection: 'row' , marginBottom: 20 , marginTop:20,display:"flex",flexDirection:"column" , alignItems:"center"}}>
+
           
-          
+<View style={{}}>
+
+<Text style={{ marginLeft: 8,marginBottom: 10 , fontFamily:"Poppins" , fontSize:20  , textDecorationLine:"underline"}}>
+ details</Text>
+</View>
+<View style={{flexWrap:"wrap",flexDirection:"row"}}>
+
+<View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 19, marginTop: 0 }}>
+
+
+
+
+
+
+
+<FontAwesome name="bed" size={20} color="gray" />
+  <View style={{ marginLeft: 7 }}>
+
+    <Text style={{  }}>{homeid?.bedrooms}</Text>
+  </View>
+
+</View>
+
+<View style={{ flexDirection: 'row',alignItems: 'center', marginLeft: 19, marginTop: 0 }}>
+<FontAwesome name="bath" size={20} color="gray" />
+  <Text style={{ marginLeft: 8,marginTop: 0 }}>
+ {homeid?.baths}</Text>
+
+
+
+</View>
+
+<View style={{ flexDirection: 'row',alignItems: 'center', marginLeft: 19, marginTop: 0 }}>
+<FontAwesome5 name="ruler-combined" size={20} color="gray" />
+  <Text style={{ marginLeft: 8,marginTop: 0 }}>
+ {homeid?.homesquremeter}</Text><Text style={{ fontSize: 10 , marginBottom:10}}>m2</Text>
+
+
+
+</View>
+<View style={{ flexDirection: 'row',alignItems: 'center', marginLeft: 19, marginTop: 0 }}>
+<MaterialIcons name="numbers" size={20} color="gray" />
+  <Text style={{ marginLeft: 8,marginTop: 0 }}>
+ {homeid?.serialnum}</Text>
+
+
+
+</View>
+</View>
+<View style={{width:"90%", display:"flex",alignContent:"center" , alignItems:"center", marginTop:25}}>
+<Text style={{ marginLeft: 8,marginTop: 0 , fontFamily:"Poppins" , fontSize:20 , textDecorationLine:"underline" }}>
+ description</Text>
+<Text style={{ marginLeft: 8,marginTop: 0 }}>
+ {homeid?.description}</Text>
+</View>
+<View style={{width:"90%", display:"flex",alignContent:"center" , alignItems:"center", marginTop:25}}>
+<Text style={{ marginLeft: 8,marginTop: 0 , fontFamily:"Poppins" , fontSize:20 , textDecorationLine:"underline" }}>
+Properties</Text>
+<Text style={{ marginLeft: 8,marginTop: 0 }}>
+Properties</Text>
+</View>
+
+                  </View>
+
+
+
+            </ScrollView>
+
+
+
           </View>
+   
         </View>
       </Modal>
             <ScrollView style={style.card}  >
@@ -377,9 +578,9 @@ const clearAuthToken = async () => {
 
 
 
-                    <Text style={{ fontSize: 24, fontWeight: 'bold', color: "#1E1E1E" }}>
+                    <Text style={{ fontSize: 24, color: "#1E1E1E" , fontFamily:"PoppinsBold"}}>
                     {homes.title}  </Text>
-                    <Text style={{ }}>€{homes.price}</Text>
+                    <Text style={{   fontFamily:"Poppins"}}>€{homes.price}</Text>
 
                     <View style={{ width: "35%", marginTop: 10 }}>
                   
@@ -456,7 +657,7 @@ const clearAuthToken = async () => {
   );
 };
 
-export default HomeScreen;
+export default HomeScreen
 
 const styles = StyleSheet.create({
  

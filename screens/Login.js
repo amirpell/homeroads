@@ -61,7 +61,7 @@ const handleError = (errorMessage, input) => {
   
           if (token) {
             setTimeout(() => {
-              navigation.replace("Main");
+              navigation.replace("Admin");
             }, 400);
           }
         } catch (error) {
@@ -96,9 +96,10 @@ else  if (!inputs.password) {
         .post("http://10.0.0.10:27017/login", user)
         .then((response) => {
           console.log(response);
-          const token = response.data.token;
+          const token = response.data.data;
+          console.log(response.data.data)
           AsyncStorage.setItem("authToken", token);
-          navigation.navigate("Main");
+          navigation.navigate("Admin");
         })
         .catch((error) => 
         {

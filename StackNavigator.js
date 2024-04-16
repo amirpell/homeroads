@@ -1,26 +1,26 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { NavigationContainer } from '@react-navigation/native'
-import AddHome from './screens/AddHome'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import HomeScreen from './screens/HomeScreen'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import AddHome from './screens/AddHome';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from './screens/HomeScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
-import HomeProfile from './screens/HomeProfile'
-import Welcome from './screens/Welcome'
-import Login from './screens/Login'
-import Register from './screens/Register'
-import EmailVerfication from './screens/EmailVerfication'
-import EmailVerified from './screens/EmailVerified'
-import UserEmailToReset from './screens/UserEmailToReset'
-import EnterResetToken from './screens/EnterResetToken'
-import NewPassword from './screens/NewPassword'
+import HomeProfile from './screens/HomeProfile';
+import Welcome from './screens/Welcome';
+import Login from './screens/Login';
+import Register from './screens/Register';
+import EmailVerfication from './screens/EmailVerfication';
+import EmailVerified from './screens/EmailVerified';
+import UserEmailToReset from './screens/UserEmailToReset';
+import EnterResetToken from './screens/EnterResetToken';
+import NewPassword from './screens/NewPassword';
 
 
 const StackNavigator = ({ navigation }) => {
 
     const Stack = createNativeStackNavigator();
-    const Tab = createBottomTabNavigator();
+   // const Tab = createBottomTabNavigator();
     const Admin = createBottomTabNavigator();
 
 
@@ -76,43 +76,19 @@ const StackNavigator = ({ navigation }) => {
 
 
  
-    function BottomTabs() {
-      
-      return (
-        <Tab.Navigator screenOptions={  {tabBarStyle: {position: 'absolute', height: 0,backgroundColor: 'powderblue' }
-         }}   headerMode = {'none'}>
-  <Tab.Screen name="HomeScreen" component={HomeScreen} options={{
-            tabBarLabel: "", headerShown: false,
-          
-            tabBarIcon: ({ focused }) => focused ? (
-              <Feather name="home" size={24} color="#539DF3" />  
-  
-            ) : (
-              <Feather name="home" size={24} color="#484C52" />
-  
-            )
-          }}
-          />
  
-     
-  
-          
-  
-                  
-            
-  
-        </Tab.Navigator>
-      )
-    }
   return (
     <NavigationContainer>
       <Stack.Navigator>
-      <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+      <Stack.Screen name="Register" component={Register} options={{ headerShown: false }}
+      
+      
+      />
 
       <Stack.Screen name="Welcome" component={Welcome} options={{ headerShown: false }} />
       <Stack.Screen name="login" component={Login} options={{ headerShown: false }} />
       <Stack.Screen name="Admin" component={AdminTabs} options={{ headerShown: false }} />
-        <Stack.Screen name="Main" component={BottomTabs} options={{ headerShown: false }} />
+      
         <Stack.Screen name="EmailVerfication" component={EmailVerfication} options={{ headerShown: false }} />
         <Stack.Screen name="EmailVerified" component={EmailVerified} options={{ headerShown: false }} />
         <Stack.Screen name="UserEmailToReset" component={UserEmailToReset} options={{ headerShown: false }} />

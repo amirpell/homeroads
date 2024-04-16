@@ -42,7 +42,7 @@ app.post("/addhome", async (req, res) => {
         name, images ,title,price
         ,description
         ,street,region,state,serialnum,propetysquremeter,homesquremeter,baths
-        ,bedrooms,proptags,imagespack
+        ,bedrooms,proptags,imagespack,regiontags,youtube
     
     } = req.body;
   
@@ -54,7 +54,7 @@ app.post("/addhome", async (req, res) => {
          name, images ,title,price,description
          ,street,region,state,serialnum,
          propetysquremeter,homesquremeter,baths,
-         bedrooms,proptags,imagespack
+         bedrooms,proptags,imagespack,regiontags,youtube
 
         });
   
@@ -75,6 +75,7 @@ app.post("/addhome", async (req, res) => {
   
 const multer = require("multer");
 const { resolve } = require("path");
+const Regions = require("./models/regions");
 
 // Configure multer for handling file uploads
 const storage = multer.diskStorage({
@@ -134,7 +135,38 @@ app.post('/login' , async (req,res) => {
       res.status(500).send({message : "error loggin in" , success: false ,error })
   }
 })
+app.post('/adminlogin' , async (req,res) => {
+  try{
+      const user  = await User.findOne({ email : req.body.email}) 
 
+      if(!user){
+          return res.status(200).send({message : " User not exist" , success : false});
+
+      }
+
+    //  const isMatch = await bcrypt.compare(req.body.password , user.password);
+      if (user.password !== req.body.password) {
+        return res.status(404).json({ message: "Invalid password" });
+      }
+      if (user.verified===false) {
+        return res.status(404).json({ message: "please verify your email" });
+      }
+      if (user.admin===false) {
+        return res.status(404).json({ message: "access denied" });
+      }
+      else{
+          const token = jwt.sign({userId: user._id}, "12345" ,{
+              expiresIn: "1d"
+          })
+          res.send({message:"login successful", success:true , data:token});
+
+      }
+
+  } catch(error){
+      console.log(error)
+      res.status(500).send({message : "error loggin in" , success: false ,error })
+  }
+})
 
 
 // user profile
@@ -157,7 +189,7 @@ app.get("/profile/:userId", async (req, res) => {
 
 app.post("/register", async (req, res) => {
   try {
-    const {email, password } = req.body;
+    const {email, password  , firstname , phone } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -166,7 +198,7 @@ app.post("/register", async (req, res) => {
 
     //create a new user
     const newUser = new User({ 
-       email, password });
+       email, password , firstname , phone });
 
     
     //generate and store the verification token
@@ -338,5 +370,57 @@ app.post('/updatepassword', async (req, res) => {
     console.log(inputresetcode ," resetinput"  )
 
     res.status(500).json({ message: "Email verification failed" });
+  }
+});
+
+
+
+
+
+
+
+app.post("/addregion", async (req, res) => {
+  try {
+    const { 
+
+      region
+  
+  } = req.body;
+
+  
+
+    //create a new user
+    const newRegion = new Regions({
+
+      region
+
+      });
+
+    
+    //generate and store the verification token
+
+    //save the  user to the database
+    await newRegion.save();
+
+
+    res.status(200).json({ message: "Registration successful" });
+  } catch (error) {
+    console.log("error registering user", error);
+    res.status(500).json({ message: "error registering user" });
+  }
+});
+
+app.get("/get-regions", async (req, res) => {
+
+  try {
+    const regions = await Regions.find()
+      .populate("region")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(regions);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "An error occurred while getting the regions" });
   }
 });

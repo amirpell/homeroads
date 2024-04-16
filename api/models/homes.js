@@ -8,7 +8,6 @@ const homesSchema = new mongoose.Schema({
   description: { type: String }, 
   images: { type:String}, 
   imagespack: { type:Array,
- 
     default: [],}, 
   status: { type:String}, 
 
@@ -20,6 +19,12 @@ const homesSchema = new mongoose.Schema({
   serialnum: { type: String}, 
   state: { type: String}, 
   region: { type: String}, 
+  youtube: { type: String}, 
+
+  regiontags:{  type:Array,
+
+    default: [],
+  },
   street: { type: String}, 
   googlemaps: { type: String}, 
   proptags:{  type:Array,

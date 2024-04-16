@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, TextInput, StyleSheet, ScrollView} from 'react-native';
 import COLORS from '../const/colors';
 import { Feather } from '@expo/vector-icons';
-
+import { MaterialIcons } from '@expo/vector-icons';
 const Input = ({
   label,
   iconName,
@@ -32,6 +32,7 @@ const Input = ({
           name={iconName}
           style={{color: COLORS.darkBlue, fontSize: 22, marginRight: 10}}
         />
+
         <TextInput
           autoCorrect={false}
           onFocus={() => {

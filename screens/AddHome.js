@@ -11,20 +11,33 @@ import {
     KeyboardAvoidingView,
     Image,
     Alert,
-    Button,
+    Button, 
     TouchableOpacity, Option, Modal, Platform, Keyboard, ImageBackground, ScrollView, FlatList
   } from "react-native";
   import React, { useEffect, useState,Component, } from "react";
   import * as SplashScreen from 'expo-splash-screen';
+  import style from '../style/style';
+  import ScrollPicker from "react-native-wheel-scrollview-picker";
 
   import axios from "axios";
 import * as ImagePicker from 'expo-image-picker';
 import { Feather } from '@expo/vector-icons';
 import { useFonts } from "expo-font";
 import MultiSelect from 'react-native-multiple-select';
+import { Ionicons } from '@expo/vector-icons';
 
 const AddHome = () => {
-  
+  const dataSource = ["0","1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+  const ref = React.useRef();
+  const [index, setIndex] = React.useState(0);
+  const [indexbedroom, setIndexbedroom] = React.useState(0);
+
+  const onValueChange = (data, selectedIndex) => {
+    setIndex(selectedIndex);
+  };
+  const onValueChangebedroom = (data, selectedIndex) => {
+    setIndexbedroom(selectedIndex);
+  };
   const items = [{
     name: 'Sold'
   }, {
@@ -36,6 +49,7 @@ const AddHome = () => {
   }
   ];
   var [proptags, setProptags] = useState([]);
+  var [regiontags, setRegiontags] = useState([]);
 
   class Multiselect extends Component {
     state = {
@@ -44,6 +58,7 @@ const AddHome = () => {
     
     onSelectedItemsChange = tags => {
       this.setState({ tags });
+      console.log(tags)
     };
 
 
@@ -52,18 +67,18 @@ const AddHome = () => {
       const { tags } = this.state;
       proptags = tags
       return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 0 ,width:"90%"}}>
           <MultiSelect
             hideTags
             items={items}
-            uniqueKey="name"
+            uniqueKey="name" 
             ref={(component) => { this.multiSelect = component }}
             onSelectedItemsChange={this.onSelectedItemsChange}
             selectedItems={tags}
             selectText="Pick Items"
             searchInputPlaceholderText="Search Items..."
             onChangeInput={ (text)=> 
-              setTord(text)}
+              setProptags(text)}
             tagRemoveIconColor="#CCC"
             tagBorderColor="#CCC"
             tagTextColor="#CCC"
@@ -83,12 +98,63 @@ const AddHome = () => {
       );
     }
   }
+  class Singleselect extends Component {
+    state = {
+      tags : []
+    };
+    
+    onSelectedItemsChange = tags => {
+      this.setState({ tags });
+      console.log(tags)
+    };
 
 
+    render() {
+
+      const { tags } = this.state;
+      regiontags = tags
+      return (
+        <View style={{ flex: 0 ,width:"90%", marginTop:25,marginBottom:25}}>
+          <MultiSelect
+            hideTags
+            single
+            items={regions}
+            uniqueKey="region"
+            ref={(component) => { this.multiSelect = component }}
+            onSelectedItemsChange={this.onSelectedItemsChange}
+            selectedItems={tags}
+            selectText="Pick Items"
+            searchInputPlaceholderText="Search Items..."
+            onChangeInput={ (text)=> 
+              setRegiontags(text)}
+            tagRemoveIconColor="#CCC"
+            tagBorderColor="#CCC"
+            tagTextColor="#CCC"
+            selectedItemTextColor="#CCC"
+            selectedItemIconColor="#CCC"
+            itemTextColor="#000"
+            displayKey="region"
+            searchInputStyle={{ color: '#CCC' }}
+            submitButtonColor="#CCC"
+            submitButtonText="Submit"
+          />
+          <View>
+  
+  </View>
+        </View>
+      );
+    }
+  }
+
+ 
 
 
-
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const [modalVisible3, setModalVisible3] = useState(false);
+ 
+  const [modalVisible4, setModalVisible4] = useState(false);
+  const [modalVisible5, setModalVisible5] = useState(false);
 
 
 
@@ -141,6 +207,9 @@ const AddHome = () => {
     const [description, setDescription] = useState("");
     const [bedrooms, setBedrooms] = useState("");
     const [baths, setBaths] = useState("");
+    const [youtube, setYoutube] = useState("");
+    const [regions, setRegions] = useState("");
+
     const [homesquremeter, setHomesquremeter] = useState("");
     const [propetysquremeter, setPropetysquremeter] = useState("");
     const [serialnum, setSerialnum] = useState("");
@@ -159,10 +228,27 @@ const AddHome = () => {
         state: '',
         region: '',
         street: '',
-        
+        youtube:'',
        
       });
-  
+
+      const fetchRegions = async () => {
+        try {
+          const response = await axios.get("http://10.0.0.10:27017/get-regions");
+          setRegions(response.data);
+
+          console.log(response.data , "amirpellman")
+        } catch (error) {
+          console.log("error fetching regions", error);
+        }
+      };
+    
+      useEffect(() => {
+        fetchRegions();
+    
+      }, []);
+      console.log(regions,"asdsd")
+
     const handleOnchange = (text, input) => {
         setInputs(prevState => ({...prevState, [input]: text}));
       };
@@ -170,6 +256,7 @@ const AddHome = () => {
       const handletest = () => {
         console.log(proptags)
         }
+    
     
           const handleAddhome = () => {
             const home = {
@@ -187,11 +274,13 @@ const AddHome = () => {
               region: region,
               street: street,
               proptags:proptags,
+              regiontags:regiontags,
+              youtube:youtube,
               imagespack:imagespack
             };
             {
             axios
-              .post("https://homeroads.onrender.com/addhome", home)
+              .post("http://10.0.0.10:27017/addhome", home)
               .then((response) => {
                 console.log(response);
               
@@ -201,15 +290,15 @@ const AddHome = () => {
                 setPrice("");
                 setTitle("");
                 setName("");
-
+                setYoutube("");
                 setBedrooms("");
                 setHomesquremeter("");
                 setPropetysquremeter("");
                 setSerialnum("");
                 setRegion("");
                 setBaths("");
-                setProptags(proptags);
-
+                setProptags("");
+                setRegiontags(regiontags);
                 setState("");
                 setImagespack(imagespack)
                 setStreet("");
@@ -246,6 +335,10 @@ const AddHome = () => {
                   console.log(selectedImageUris)
               }
           }
+          console.log(region , "region selected")
+          console.log(regiontags , "Asdasd")
+          console.log(baths , "baths")
+
   return (
 
     <KeyboardAvoidingView  behavior={Platform.OS === "ios" ? "padding" : "height"} style={{flex:1}}>
@@ -261,14 +354,162 @@ const AddHome = () => {
 
 
    </View>
+ 
+   <Modal
+        animationType="none"
+        transparent={true}
+        statusBarTranslucent={true}
 
-   <ScrollView>
-      
-        <View style={{ marginTop: 0 ,marginLeft:10}}>
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+         
+        }}
+        >
+
+
+
+        <View  style={style.centeredView}>
           
-        <Multiselect/>
+          <View style={style.modalView}>
+            <View style={{width:"100%" ,height:"100%", display:"flex" , alignItems:"center" }}>
 
-        <Input style={{fontFamily:"Poppins",width:"80%"}}
+
+
+          <Pressable
+              style={[style.button, style.buttonClose]}
+              onPress={() =>
+                {
+                  setModalVisible(!modalVisible);
+                }
+               }>
+                
+                <Ionicons name="chevron-back" size={24} color="black" />
+            </Pressable>
+            <Multiselect/>
+   <Singleselect/>
+   <Text>bedrooms</Text>
+   <View style={{height:150, width:"100%"}}>
+   <ScrollPicker
+      ref={ref}
+      dataSource={dataSource}
+      selectedIndex={indexbedroom}
+      wrapperHeight={150}
+      wrapperBackground="#FFFFFF"
+      itemHeight={40}
+      highlightColor="#d8d8d8"
+      highlightBorderWidth={1}
+      onValueChange={(data, selectedIndex) => {
+        setBedrooms(data);
+                    handleOnchange(data,'bedrooms')
+        console.log(selectedIndex, "select")
+        console.log(data, "data")
+//data is the current num
+      }}
+    />
+    </View>
+
+<Input style={{fontFamily:"Poppins",width:"80%"}}
+                value={homesquremeter}
+                onChangeText ={
+                  (text) => {
+                    setHomesquremeter(text);
+                    handleOnchange(text,'homesquremeter')
+                  }}
+                
+                  label="homesquremeter"
+                placeholder="Enter your homesquremeter"
+              />
+       <Input style={{fontFamily:"Poppins",width:"80%"}}
+                value={street}
+                onChangeText ={
+                  (text) => {
+                    setStreet(text);
+                    handleOnchange(text,'street')
+                  }}
+                
+                  label="street"
+                placeholder="Enter your street"
+              />
+   
+        
+   <View style={{display:"flex" ,position:"absolute", justifyContent:"flex-end", alignItems:"flex-end", height:"95%", width:"100%"}}>  
+           
+                <Pressable 
+          
+            style={{
+              width: "85%",
+              backgroundColor: "#539DF3",
+              justifyContent:"center",
+              height:48,
+              marginTop: 0,
+              marginLeft: "auto",
+              marginRight: "auto",
+              borderRadius: 16,
+            }}
+            onPress={() =>
+              {
+                setModalVisible2(!modalVisible2);
+              }}
+          >
+            <Text
+              style={{
+                
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: 16,
+                color: "white",
+              }}
+        >
+              Continue
+            </Text>
+            
+                  </Pressable>
+            </View>
+     
+
+
+            </View>
+
+
+
+
+          </View>
+   
+        </View>
+      </Modal>
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={modalVisible2}
+        statusBarTranslucent={true}
+
+        onRequestClose={() => {
+          setModalVisible2(!modalVisible2);
+         
+        }}
+        >
+
+
+
+        <View  style={style.centeredView}>
+          
+          <View style={style.modalView}>
+            <View style={{width:"100%" ,height:"100%", display:"flex" , alignItems:"center" }}>
+
+            <Pressable
+              style={[style.button, style.buttonClose]}
+              onPress={() =>
+                {
+               setModalVisible2(!modalVisible2)
+                }
+               }>
+                
+                <Ionicons name="chevron-back" size={24} color="black" />
+            </Pressable>
+
+            <View style={{ display:"flex" , justifyContent:"center",alignItems:"center",height:"75%"}}>  
+                        <Input style={{fontFamily:"Poppins",width:"80%"}}
                 value={name}
                 onChangeText ={
                   (text) => {
@@ -301,6 +542,7 @@ const AddHome = () => {
                   label="price"
                 placeholder="Enter your price"
               />
+              
                  <Input style={{fontFamily:"Poppins",width:"80%"}}
                 value={description}
                 onChangeText ={
@@ -313,129 +555,83 @@ const AddHome = () => {
                   label="description"
                 placeholder="Enter your description"
               />
+</View>
 
 
 
+<View style={{display:"flex" ,position:"absolute", justifyContent:"flex-end", alignItems:"flex-end", height:"95%", width:"100%"}}>  
 
-
-<Input style={{fontFamily:"Poppins",width:"80%"}}
-                value={bedrooms}
-                onChangeText ={
-                  (text) => {
-                    setBedrooms(text);
-                    handleOnchange(text,'bedrooms')
-                  }}
-                
-                  label="bedrooms"
-                placeholder="Enter your bedrooms"
-              />
-
-<Input style={{fontFamily:"Poppins",width:"80%"}}
-                value={homesquremeter}
-                onChangeText ={
-                  (text) => {
-                    setHomesquremeter(text);
-                    handleOnchange(text,'homesquremeter')
-                  }}
-                
-                  label="homesquremeter"
-                placeholder="Enter your homesquremeter"
-              />
-       <Input style={{fontFamily:"Poppins",width:"80%"}}
-                value={street}
-                onChangeText ={
-                  (text) => {
-                    setStreet(text);
-                    handleOnchange(text,'street')
-                  }}
-                
-                  label="street"
-                placeholder="Enter your street"
-              />
-       <Input style={{fontFamily:"Poppins",width:"80%"}}
-                value={region}
-                onChangeText ={
-                  (text) => {
-                    setRegion(text);
-                    handleOnchange(text,'region')
-                  }}
-                
-                  label="region"
-                placeholder="Enter your region"
-              />
-       <Input style={{fontFamily:"Poppins",width:"80%"}}
-                value={state}
-                onChangeText ={
-                  (text) => {
-                    setState(text);
-                    handleOnchange(text,'state')
-                  }}
-                
-                  label="state"
-                placeholder="Enter your state"
-              />
-       <Input style={{fontFamily:"Poppins",width:"80%"}}
-                value={serialnum}
-                onChangeText ={
-                  (text) => {
-                    setSerialnum(text);
-                    handleOnchange(text,'serialnum')
-                  }}
-                
-                  label="serialnum"
-                placeholder="Enter your serialnum"
-              />
-       <Input style={{fontFamily:"Poppins",width:"80%"}}
-                value={baths}
-                onChangeText ={
-                  (text) => {
-                    setBaths(text);
-                    handleOnchange(text,'baths')
-                  }}
-                
-                  label="baths"
-                placeholder="Enter your baths"
-              />
-        </View>
-
-        <View style={styles.container}>
-           
+            <Pressable 
           
-                  <ImageBackground>
-                <Image
-                 style={{
-                  
-                   width: 100,
-                   height: 100,
-                   borderRadius: 20,
-                   resizeMode: "contain",
-                 }}
-                 source={require(
-                  "../iconpics/addimage.jpg",
-    )}
-               />
-               </ImageBackground>  
-               {
+            style={{
+              width: "85%",
+              backgroundColor: "#539DF3",
+              justifyContent:"center",
+              height:48,
+              marginTop: 0,
+              marginLeft: "auto",
+              marginRight: "auto",
+              borderRadius: 16,
+            }}
+            onPress={() =>
+              {
+                setModalVisible3(!modalVisible3);
+              }}
+          >
+            <Text
+              style={{
+                
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: 16,
+                color: "white",
+              }}
+        >
+              Continue
+            </Text>
             
-            images  && <Image style={styles.image} source={{uri: images}} />
+                  </Pressable>
+                  </View>
             
-        }
-                     <View style={styles.uploadBtnContainer}>
-                     
-                         <TouchableOpacity onPress={addImage} style={styles.uploadBtn} >
-                         <Feather name="camera" size={24} color="black"
-                          style={{fontSize:15,marginBottom:9,marginRight:5}}/>
+            </View>
 
-                             <Text style={{fontSize:12,marginBottom:9,fontWeight:"bold"
-                             ,shadowOpacity: 0.27,
+
+
+
+          </View>
    
-    }}>{images ? 'Edit' : 'Add'} </Text>
-         </TouchableOpacity>
-       
-                     </View>
-                     
-             </View>
-             <View style={styles.container}>
+        </View>
+      </Modal>
+
+      <Modal
+        animationType="none"
+        transparent={true}
+        statusBarTranslucent={true}
+
+        visible={modalVisible3}
+        onRequestClose={() => {
+          setModalVisible3(!modalVisible3);
+         
+        }}
+        >
+
+
+
+        <View  style={style.centeredView}>
+          
+          <View style={style.modalView}>
+            <View style={{width:"100%" , display:"flex" , alignItems:"flex-start",height:"100%" }}>
+            <Pressable
+              style={[style.button, style.buttonClose]}
+              onPress={() =>
+                {
+               setModalVisible3(!modalVisible3)
+                }
+               }>
+                
+                <Ionicons name="chevron-back" size={24} color="black" />
+            </Pressable>
+            <View style={styles.container}>
            
           
            <ImageBackground>
@@ -459,7 +655,7 @@ const AddHome = () => {
  }
               <View style={styles.uploadBtnContainer}>
               
-                  <TouchableOpacity onPress={pickImage} style={styles.uploadBtn} >
+                  <TouchableOpacity onPress={addImage} style={styles.uploadBtn} >
                   <Feather name="camera" size={24} color="black"
                    style={{fontSize:15,marginBottom:9,marginRight:5}}/>
 
@@ -472,17 +668,303 @@ const AddHome = () => {
               </View>
               
       </View>
-             <FlatList
-                horizontal
-                data={imagespack}
-                keyExtractor={(item, index) => item.uri + index.toString()}
-                renderItem={({ item }) => (
-                    <View style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', flexDirection: 'row'}}>
-                        <Image source={{ uri: item }} style={{ width: 200, height: 200 }} />
-                    </View>
-                )}
-            />
-     
+      <View style={styles.container}>
+    
+   
+    <ImageBackground>
+  <Image
+   style={{
+    
+     width: 100,
+     height: 100,
+     borderRadius: 20,
+     resizeMode: "contain",
+   }}
+   source={require(
+    "../iconpics/addimage.jpg",
+)}
+ />
+ </ImageBackground>  
+
+
+       <View style={styles.uploadBtnContainer}>
+       
+           <TouchableOpacity onPress={pickImage} style={styles.uploadBtn} >
+           <Feather name="camera" size={24} color="black"
+            style={{fontSize:15,marginBottom:9,marginRight:5}}/>
+
+               <Text style={{fontSize:12,marginBottom:9,fontWeight:"bold"
+               ,shadowOpacity: 0.27,
+
+}}>{images ? 'Edit' : 'Add'} </Text>
+</TouchableOpacity>
+
+       </View>
+       
+</View>
+      <FlatList
+         horizontal
+         data={imagespack}
+         keyExtractor={(item, index) => item.uri + index.toString()}
+         renderItem={({ item }) => (
+             <View style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', flexDirection: 'row'}}>
+                 <Image source={{ uri: item }} style={{ width: 200, height: 200 , marginLeft:10 }} />
+             </View>
+         )}
+     />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+ 
+ <View style={{display:"flex" ,position:"absolute", justifyContent:"flex-end", alignItems:"flex-end", height:"95%", width:"100%"}}>  
+
+<Pressable 
+
+style={{
+  width: "85%",
+  backgroundColor: "#539DF3",
+  justifyContent:"center",
+  height:48,
+  marginTop: 0,
+  marginLeft: "auto",
+  marginRight: "auto",
+  borderRadius: 16,
+}}
+onPress={() =>
+  {
+    setModalVisible4(!modalVisible4);
+  }}
+>
+<Text
+  style={{
+    
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 16,
+    color: "white",
+  }}
+>
+  Continue
+</Text>
+
+      </Pressable>
+      </View>
+            </View>
+
+
+
+
+          </View>
+   
+        </View>
+      </Modal>
+ 
+
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={modalVisible4}
+        statusBarTranslucent={true}
+
+        onRequestClose={() => {
+          setModalVisible4(!modalVisible4);
+         
+        }}
+        >
+
+
+
+        <View  style={style.centeredView}>
+          
+          <View style={style.modalView}>
+            <View style={{width:"100%" , display:"flex" , alignItems:"flex-start" }}>
+         
+    
+<Input style={{fontFamily:"Poppins",width:"80%"}}
+                value={state}
+                onChangeText ={
+                  (text) => {
+                    setState(text);
+                    handleOnchange(text,'state')
+                  }}
+                
+                  label="state"
+                placeholder="Enter your state"
+              />
+       <Input style={{fontFamily:"Poppins",width:"80%"}}
+                value={serialnum}
+                onChangeText ={
+                  (text) => {
+                    setSerialnum(text);
+                    handleOnchange(text,'serialnum')
+                  }}
+                
+                  label="serialnum"
+                placeholder="Enter your serialnum"
+              />
+               
+               <Text>Baths</Text>
+
+              <View style={{height:150, width:"100%"}}>
+   <ScrollPicker
+      ref={ref}
+      dataSource={dataSource}
+      selectedIndex={index}
+      wrapperHeight={150}
+      wrapperBackground="#FFFFFF"
+      itemHeight={40}
+      highlightColor="#d8d8d8"
+      highlightBorderWidth={1}
+      onValueChange={(data, selectedIndex) => {
+        setBaths(data);
+                    handleOnchange(data,'baths')
+        console.log(selectedIndex, "select")
+        console.log(data, "data")
+//data is the current num
+      }}
+    />
+    </View>
+
+  
+          <Pressable
+              style={[style.button, style.buttonClose]}
+              onPress={() =>
+                {
+               setModalVisible4(!modalVisible4)
+                }
+               }>
+                
+                <Ionicons name="chevron-back" size={24} color="black" />
+            </Pressable>
+            <Pressable
+              style={[style.button, style.buttonClose]}
+              onPress={() =>
+                {
+                  setModalVisible5(!modalVisible5)
+
+                }
+               }>
+                
+               <Text>next</Text>
+            </Pressable>
+            </View>
+
+
+
+
+          </View>
+   
+        </View>
+      </Modal>
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={modalVisible5}
+        statusBarTranslucent={true}
+
+        onRequestClose={() => {
+          setModalVisible5(!modalVisible5);
+         
+        }}
+        >
+
+
+
+        <View  style={style.centeredView}>
+          
+          <View style={style.modalView}>
+            <View style={{width:"100%" , display:"flex" , alignItems:"flex-start" }}>
+         
+    
+            <Input style={{fontFamily:"Poppins",width:"80%"}}
+                value={youtube}
+                onChangeText ={
+                  (text) => {
+                    setYoutube(text);
+                    handleOnchange(text,'youtube')
+                  }}
+                
+                  label="youtube"
+                placeholder="hXfJuVMWnxA"
+              />
+
+    
+  
+          <Pressable
+              style={[style.button, style.buttonClose]}
+              onPress={() =>
+                {
+               setModalVisible5(!modalVisible5)
+                }
+               }>
+                
+                <Ionicons name="chevron-back" size={24} color="black" />
+            </Pressable>
+            <Pressable
+              style={[style.button, style.buttonClose]}
+              onPress=
+                {handleAddhome}
+               >
+                
+               <Text>next</Text>
+            </Pressable>
+            </View>
+
+
+
+
+          </View>
+   
+        </View>
+      </Modal>
+
+
+
+
+      <View style={style.buttonContainer}>
+   
+   <Pressable style={{
+     flexDirection: "row", marginRight: 0, flex: 1,
+     justifyContent: 'center',
+     alignItems: 'center',
+
+           }}
+           onPress={() => setModalVisible(!modalVisible)}
+
+   >
+   
+   
+       
+       <Text style={{ marginLeft: 20, color: "#8C8C8C" }}>price / bedrooms / baths</Text>
+
+   </Pressable>
+ </View>
+
+
+
+
+   
+
+   
         <Pressable
          
          onPress={handleAddhome} 
@@ -504,7 +986,7 @@ const AddHome = () => {
              justifyContent:"center",
              marginTop:-8,
              fontWeight: "bold",
-             fontSize: 16,
+             fontSize: 16, 
              color: "white",
            }}
          >
@@ -513,29 +995,26 @@ const AddHome = () => {
        </Pressable>
       
        
-       </ScrollView>
        </View>
     </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };
 
-export default AddHome;
+export default AddHome
 
 const styles = StyleSheet.create({ 
     
 
     container:{
-        elevation:3,
         height:100,
         width:100,
         padding:0,
         justifyContent:"center",
         alignSelf:"center",
         alignItems:"center",
-        borderRadius:999,
-       
-        
+        margin:25
+      
     },
     uploadBtnContainer:{
         
@@ -546,16 +1025,7 @@ const styles = StyleSheet.create({
         height:'25%',
         borderColor:"#000000"
         ,borderWidth:0.5,
-        borderRadius:10,
-        shadowRadius: 4.65,
-        elevation: 5,
-        borderColor: "#F0F0F0",
-        borderWidth: 1,
-        shadowColor: "#707070",
-        shadowOffset: {
-          width: 3,
-          height: 3,
-        },
+     
         backgroundColor: "#ffffff",
         flexDirection: 'row',
         borderWidth: 0.5,

@@ -68,6 +68,10 @@ const handleError = (errorMessage, input) => {
     handleError('Please input new password', 'newpasswordagain');
     isValid = false;
   }
+  else if (newpassword.length<6) {
+    handleError('Please input password above 6 characters', 'newpasswordagain');
+    isValid = false;
+  }
    
   else if (inputs.newpasswordagain!==inputs.newpassword) {
     handleError('password dosnt match', 'newpasswordagain');

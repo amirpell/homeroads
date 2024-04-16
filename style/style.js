@@ -100,17 +100,15 @@ postgallery:{
 
 
       centeredView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-       
+        
+        alignItems: "flex-end",
+        justifyContent:"flex-end",
+
       },
       modalView: {
-        
-        margin: 20,
+        marginTop: 25,
         backgroundColor: 'white',
-       
-        padding: 0,
+        padding: 25,
         height:'100%',
         width:'100%',
         alignItems: 'center',
@@ -118,17 +116,18 @@ postgallery:{
       
       },
       button: {
-         marginTop:15,
+         marginTop:5,
         borderRadius: 20,
-       marginLeft:5,
+       marginLeft:0,
        marginBottom:15,
-        padding: 10,
+        padding: 5,
       },
       buttonOpen: {
         backgroundColor: '#F194FF',
       },
       buttonClose: {
         backgroundColor: '#ffffff',
+        width:"100%"
       },
       textStyle: {
         color: 'white',

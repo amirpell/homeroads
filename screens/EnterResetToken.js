@@ -17,7 +17,7 @@ import {
   import { Ionicons } from "@expo/vector-icons";
   import { useNavigation } from "@react-navigation/native";
   import axios from "axios";
-
+  import { MaterialIcons } from '@expo/vector-icons';
 import Input from '../components/Input';
 import { useFonts } from "expo-font";
 
@@ -163,12 +163,12 @@ import { useFonts } from "expo-font";
                     handleOnchange(text,'changepass')
                   }}
                 
-                  iconName="mail"
+                  iconName="hash"
                   error={errors.changepass}
                   label="Token"
                 placeholder="Enter your Token"
               />
-  
+        
             <View style={{ marginBottom: 0 }}>
                 <View> 
 

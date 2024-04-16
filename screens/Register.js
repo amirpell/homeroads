@@ -10,10 +10,10 @@ import {
     Image,
     Alert,
     Button,
-    TouchableOpacity, Option, Modal, Platform, Keyboard, ImageBackground
+    TouchableOpacity, Option, Modal, Platform, Keyboard, ImageBackground, ScrollView
   } from "react-native";
   import * as SplashScreen from 'expo-splash-screen';
-  import React, { useEffect, useState } from "react";
+  import React, { useEffect, useLayoutEffect, useState } from "react";
   import { Ionicons } from "@expo/vector-icons";
   import { useNavigation } from "@react-navigation/native";
   import axios from "axios";
@@ -27,32 +27,23 @@ import { useFonts } from "expo-font";
       console.log(e);
     
     }
-    let correntmonth=("0" + (new Date().getMonth() + 1 )).slice(-2);
-    let correntyear=new  Date().getFullYear();
-    let correntday=new  Date().getDate();
-    
-        const fullcorrentdate= `${correntyear}${correntmonth}${correntday}`;
-        const fulluserdate= `${year}${month}${day}`;
+    const navigation = useNavigation();
+
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [gender, setGender] = useState("");
-    const [profileimage, setPofileimage] 
-    = useState(null);
-    const [country, setCountry] = React.useState("");
-    const [day, setDay] = React.useState("");
-    const [month, setMonth] = React.useState("");
-    const [year, setYear] = React.useState("");
-
-    const [modalVisible, setModalVisible] = useState(false);
-    const [modalVisiblesec, setModalVisiblesec] = useState(false);
+    const [firstname, setFirstname] = useState("");
+    const [phone, setPhone] = useState("");
 
    
-    const [hidePassword, setHidePassword] = React.useState(password);
+
+   
     const [inputs, setInputs] = React.useState({
       email: '',
       password:'',
-    
+      firstname:'',
+      phone:'',
+
 
 
      
@@ -79,10 +70,18 @@ import { useFonts } from "expo-font";
       else if(password.length < 6)
       {
         handleError('Please input password above 6 characters', 'password');
-      
+        isValid = false;
+
 
      }
-   
+     if (!inputs.firstname) {
+      handleError('Please input name', 'firstname');
+      isValid = false;
+    }
+    if (!inputs.phone) {
+      handleError('Please input phone', 'phone');
+      isValid = false;
+    }
       else {              
           handleRegister();
 
@@ -99,12 +98,13 @@ import { useFonts } from "expo-font";
 
 
    
-    const navigation = useNavigation();
     const handleRegister = () => {
       const user = {
         email: email,
         password: password,
-      
+        firstname: firstname,
+        phone: phone,
+
 
       };
  
@@ -116,6 +116,8 @@ import { useFonts } from "expo-font";
           console.log(response);
         
 
+          setPhone("");
+          setFirstname("");
 
           setEmail("");
          setPassword("");
@@ -149,6 +151,7 @@ import { useFonts } from "expo-font";
        } else {
         SplashScreen.hideAsync();
        }
+     
     return (
       <KeyboardAvoidingView  behavior={Platform.OS === "ios" ? "padding" : "height"} style={{flex:1}}>
 
@@ -156,14 +159,11 @@ import { useFonts } from "expo-font";
 
         style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
       >
-    
    
-<View style={{height:"30%",width:"100%",alignItems:"center",marginBottom:60}}> 
+<View style={{height:150,width:"100%",alignItems:"center",marginBottom:10,justifyContent:"center",backgroundColor:"#539df3",fontFamily:"Poppins",}}> 
 
     
-<Image
-    style={{alignItems:"center",position:"absolute",width:"100%",height:"100%",backgroundColor:"#ffffff", objectFit:"fill"}}
-    source={require("../iconpics/icon3.png")}/>
+<Text style={{fontSize:24}}>Create Account</Text>
 
      </View>
           
@@ -174,7 +174,36 @@ import { useFonts } from "expo-font";
          
   
           <View style={{ marginTop: 0 ,marginLeft:10}}>
-            
+             
+          <Input style={{fontFamily:"Poppins",width:"80%"}}
+                value={firstname}
+                onFocus={() => handleError(null, 'firstname')}
+                onChangeText ={
+                  (text) => {
+                    setFirstname(text);
+                    handleOnchange(text,'firstname')
+                  }}
+                
+                  iconName="user"
+                  error={errors.firstname}
+                  label="Name"
+                placeholder="Enter your Name"
+              />
+               
+               <Input style={{fontFamily:"Poppins",width:"80%"}}
+                value={phone}
+                onFocus={() => handleError(null, 'phone')}
+                onChangeText ={
+                  (text) => {
+                    setPhone(text);
+                    handleOnchange(text,'phone')
+                  }}
+                
+                  iconName="phone"
+                  error={errors.phone}
+                  label="Phone"
+                placeholder="Enter your Phone Number"
+              />
              
               <Input style={{fontFamily:"Poppins",width:"80%"}}
                 value={email}
@@ -255,7 +284,6 @@ import { useFonts } from "expo-font";
 
      
         
-         
       </SafeAreaView>
       </KeyboardAvoidingView>
 
